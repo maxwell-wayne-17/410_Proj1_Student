@@ -72,12 +72,63 @@ int stringToInt(const char *myString) {
  */
 int loadData(const char* filename, bool ignoreFirstRow) {
 
+	specs.clear();
+
+	ifstream file;
+	file.open(filename);
+
+	if (!file.is_open()){
+		return COULD_NOT_OPEN_FILE;
+	}
+
+	string row;
+	string skipRow;
+
+	if (ignoreFirstRow){
+		getline(file, skipRow);
+	}
+
+	while(getline(file, row)){
+		int commas = 0;
+		for (int i = 0; i < (signed)row.length(); i++){
+			if (row[i] == CHAR_TO_SEARCH_FOR){
+				commas++;
+			}
+		}
+
+		if (commas == 3){
+
+			process_stats pStats;
+			string processNumber, startTime, cpuTime, ioTime;
+
+			stringstream ss(row);
+			getline(ss, processNumber, CHAR_TO_SEARCH_FOR);
+			getline(ss, startTime, CHAR_TO_SEARCH_FOR);
+			getline(ss, cpuTime, CHAR_TO_SEARCH_FOR);
+			getline(ss, ioTime, CHAR_TO_SEARCH_FOR);
+
+		}
+	}
+
+
 	return SUCCESS;
 }
 
 
 //will sort according to user preference using the above sort methods
 void sortData(SORT_ORDER mySortOrder) {
+
+	switch (mySortOrder){
+	case CPU_TIME: sort(specs.begin(), specs.end(), sortCpuTime);
+		break;
+	case PROCESS_NUMBER: sort(specs.begin(), specs.end(), sortProcessNumber);
+		break;
+	case START_TIME: sort(specs.begin(), specs.end(), sortStartTime);
+		break;
+	case IO_TIME: sort(specs.begin(), specs.end(), sortIoTime);
+		break;
+	default: break;
+	}
 
 }
 
