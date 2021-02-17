@@ -107,9 +107,30 @@ int loadData(const char* filename, bool ignoreFirstRow) {
 			getline(ss, cpuTime, CHAR_TO_SEARCH_FOR);
 			getline(ss, ioTime, CHAR_TO_SEARCH_FOR);
 
+			stringstream pNum(processNumber);
+			stringstream stNum(startTime);
+			stringstream cpuNum(cpuTime);
+			stringstream ioNum(ioTime);
+
+			pNum >> pStats.process_number;
+			stNum >> pStats.start_time;
+			cpuNum >> pStats.cpu_time;
+			ioNum >> pStats.io_time;
+
+			if (pStats.process_number >= 0 && pStats.start_time >= 0 &&
+					pStats.cpu_time >= 0 && pStats.io_time >= 0){
+				specs.push_back(pStats);
+			}
+
+			ss.clear();
+			pNum.clear();
+			stNum.clear();
+			cpuNum.clear();
+			ioNum.clear();
 		}
 	}
 
+	file.close();
 
 	return SUCCESS;
 }
@@ -132,8 +153,11 @@ void sortData(SORT_ORDER mySortOrder) {
 
 }
 
+//return the first struct in the vector
+//then deletes it from the vector
 process_stats getNext() {
-	process_stats myFirst;
+	process_stats myFirst = specs[0];
+	specs.erase(specs.begin());
 
 	return myFirst;
 }
